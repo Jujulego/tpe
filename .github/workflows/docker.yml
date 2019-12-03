@@ -13,7 +13,7 @@ jobs:
     - name: Publish Docker image
       uses: elgohr/Publish-Docker-Github-Action@2.9
       with:
-        name: jujulego/tpe-web
+        name: jujulego/tpe/tpe-web
         username: jujulego
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
