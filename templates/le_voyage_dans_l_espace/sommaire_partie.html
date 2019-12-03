@@ -1,0 +1,14 @@
+{% extends "le_voyage_dans_l_espace/base.html" %}
+{% load le_voyage_dans_l_espace_extras %}
+
+{% block titre %}{{ partie.titre }} : Sommaire{% endblock %}
+
+{% block contenu %}
+	<h2 class='sous_titre'>{{ partie.numero|decimal_vers_romain }}) {{ partie.titre }}</h2>
+	
+	<ul class='sommaire_partie'>
+		{% for page in pages_partie %}
+			<li><a href="{% url 'page' page.slug %}">{{ page.titre }}</a></li>
+		{% endfor %}
+	</ul>
+{% endblock %}

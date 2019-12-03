@@ -1,0 +1,11 @@
+{% extends "le_voyage_dans_l_espace/base.html" %}
+{% load le_voyage_dans_l_espace_extras %}
+{% load static %}
+
+{% block titre %}Test{% endblock %}
+
+{% block contenu %}
+	<h2 class='sous_titre'>Test</h2>
+	
+	<img width='300' src="{% static 'le_voyage_dans_l_espace/images/antimatiere/schema_moteur_antimatiere.gif' %}" title="Schéma d'un moteur à antimatière" />
+{% endblock %}

@@ -1,0 +1,130 @@
+{% load static %}
+{% load le_voyage_dans_l_espace_extras %}
+
+<!DOCTYPE html>
+<html lang='fr'>
+	<head>
+		<meta charset='utf-8' />
+		<link rel='stylesheet' href="{% static 'le_voyage_dans_l_espace/style.css' %}" />
+		<!--[if lt IE 9]>
+			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<title>{% block titre %}{{ page_actuelle.titre }}{% endblock %}</title>
+	</head>
+
+	<body id='body'>
+		<div id='mode_emploi'>
+			<p id='mode_emploi_nav'>Cliquez ici pour accéder à des liens renvoyants à toutes les pages du site, clasées par parties</p>
+		</div>
+		
+		<div id='overlay_images'>
+		</div>
+		
+		<nav id='nav' class='navigation'>
+			<div id='bouton_base'>
+				<p>&gt;&gt;</p>
+			</div>
+
+			<div id='div_liste'>
+				<div id='bouton_retour'>
+					<p>&lt;&lt;</p>
+				</div>
+				
+				<table>
+					{% if pages_debut %}
+						<thead>
+							<tr>
+								<td colspan='2'>
+									<ul>
+										<li><a href="{% url 'accueil' %}">Sommaire</a></li>
+										{% for page in pages_debut %}
+											<li><a href="{% url 'page' page.slug %}">{{ page.titre }}</a></li>
+										{% endfor %}
+									</ul>
+								</td>
+							</tr>
+						</thead>
+					{% endif %}
+					
+					{% if pages_fin %}
+						<tfoot>
+							<tr>
+								<td colspan='2'>
+									<ul>
+										{% for page in pages_fin %}
+											<li><a href="{% url 'page' page.slug %}">{{ page.titre }}</a></li>
+										{% endfor %}
+									</ul>
+								</td>
+							</tr>
+						</tfoot>
+					{% endif %}
+					
+					{% for partie, pages in parties %}
+						<tbody class='partie_liens'>
+							<tr class='titre_partie_liens'>
+								<td class='numero_partie'>{{ partie.numero|decimal_vers_romain }})</td>
+								<td class='titre_partie'>{{ partie.titre|title }}</td>
+							</tr>
+						
+							<tr>
+								<td></td>
+								<td>
+									<ul class='liste_liens'>
+										<li><a href="{% url 'sommaire' partie.slug %}">Sommaire</a></li>
+										{% for page in pages %}
+											<li><a href="{% url 'page' page.slug %}">{{ page.titre }}</a></li>
+										{% endfor %}
+									</ul>
+								</td>
+							</tr>
+						</tbody>
+					{% endfor %}
+				</table>
+			</div>
+		</nav>
+
+		<header id='titre'>
+			<h1 class='titre_principal'>VOYAGE DANS L'ESPACE</h1>
+			<p class='theme'>thème : Les réalisations techniques face aux défis du XXIe siècle</p>
+		</header>
+
+		<div id='div_principale'>
+			{% block contenu %}
+				{% autoescape off %}
+					{{ page_actuelle.contenu|smart_escape }}
+				{% endautoescape %}
+			{% endblock %}
+		</div>
+	
+		<footer>
+			{% if page_actuelle.slug == "introduction" %}
+				<a id='lien_gauche' href="{% url 'accueil' %}">&lt;&lt; page précédente</a>
+			{% elif page_actuelle.slug == "conclusion" %}
+				<a id='lien_gauche' href="{% url 'page' 'le-moteur-ionique' %}">&lt;&lt; page précédente</a>
+			{% elif page_precedente %}
+				<a id='lien_gauche' href="{% url 'page' page_precedente.slug %}">&lt;&lt; page précédente</a>
+			{% elif page_actuelle.numero == 1 %}
+				<a id='lien_gauche' href="{% url 'sommaire' page_actuelle.partie.slug %}">&lt;&lt; page précédente</a>
+			{% elif partie_precedente.slug == "debut" %}
+				<a id='lien_gauche' href="{% url 'accueil' %}">&lt;&lt; partie pécédente</a>
+			{% elif partie_precedente %}
+				<a id='lien_gauche' href="{% url 'sommaire' partie_precedente.slug %}">&lt;&lt; partie précédente</a>
+			{% endif %}
+		
+			{% if page_suivante %}
+				<a id='lien_droite' href="{% url 'page' page_suivante.slug %}">page suivante &gt;&gt;</a>
+			{% elif partie_suivante.slug == "fin" %}
+				<a id='lien_droite' href="{% url 'page' 'conclusion' %}">page suivante &gt;&gt;</a>
+			{% elif partie_suivante %}
+				<a id='lien_droite' href="{% url 'sommaire' partie_suivante.slug %}">partie suivante &gt;&gt;</a>
+			{% endif %}
+	
+				<!-- Activation des scripts -->
+			<script src="{% static 'le_voyage_dans_l_espace/compatibiliteIE.js' %}"></script>
+			<script src="{% static 'le_voyage_dans_l_espace/barre_nav.js' %}"></script>
+			<script src="{% static 'le_voyage_dans_l_espace/canvas.js' %}"></script>
+			<script src="{% static 'le_voyage_dans_l_espace/images.js' %}"></script>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,34 @@
+{% extends "le_voyage_dans_l_espace/base.html" %}
+{% load le_voyage_dans_l_espace_extras %}
+
+{% block titre %}Sommaire{% endblock %}
+
+{% block contenu %}
+	<h2 class='sous_titre'>Sommaire</h2>
+
+	<table id='table_sommaire'>
+		{% for p in pages_debut %}
+			<tr>
+				<td class='titre_page' colspan='3'><a href="{% url 'page' p.slug %}">{{ p.titre }}</a></td>
+			</tr>
+		{% endfor %}
+		{% for partie, pages in parties %}
+			<tr class='partie'>
+				<td class='numero_partie'>{{ partie.numero|decimal_vers_romain }}</td>
+				<td class='titre_partie' colspan='2'><a href="{% url 'sommaire' partie.slug %}">{{ partie.titre|title }}</a></td>
+			</tr>
+			{% for p in pages %}
+				<tr>
+					<td></td>
+					<td class='numero_page'>{{ p.numero }})</td>
+					<td class='titre_page'><a href="{% url 'page' p.slug %}">{{ p.titre }}</a></td>
+				</tr>
+			{% endfor %}
+		{% endfor %}
+		{% for p in pages_fin %}
+			<tr>
+				<td class='titre_page' colspan='3'><a href="{% url 'page' p.slug %}">{{ p.titre }}</a></td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

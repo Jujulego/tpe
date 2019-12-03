@@ -1,0 +1,71 @@
+# -*- coding: UTF-8 -*-
+from django.db import models
+from tpe.settings import STATIC_URL
+
+import re
+
+# regex
+trouve_liens_vues = re.compile("^(?P<avant>.*){% url_vue (?P<nom_page>.+?) %}(?P<apres>.*)$", re.DOTALL)
+trouve_liens_sommaire = re.compile("^(?P<avant>.*){% url_sommaire (?P<nom_partie>.+?) %}(?P<apres>.*)$", re.DOTALL)
+
+# Create your models here.
+
+class Partie(models.Model):
+# Méthodes spéciales
+	def __str__(self):
+		return self.titre
+
+# Attributs
+	numero = models.IntegerField()
+	titre = models.CharField(max_length=100)
+	slug = models.SlugField(max_length=100)
+
+class Page(models.Model):
+# Méthodes spéciales
+	def __str__(self):
+		return self.titre
+		
+# Méthodes
+	def _get_contenu(self):
+		texte = self._contenu
+	
+		if self.images:
+			pos = texte.find("{{ STATIC_URL }}")
+			while pos != -1:
+				texte = STATIC_URL.join((texte[:pos], texte[pos+16:]))
+				
+				pos = texte.find("{{ STATIC_URL }}")
+			
+		if self.liens_vues:
+			trouve = trouve_liens_sommaire.match(texte)
+			while trouve:
+				texte = trouve.groupdict()["avant"] + "/sommaire-" + trouve.groupdict()["nom_partie"] + "/" + trouve.groupdict()["apres"]
+				
+				trouve = trouve_liens_sommaire.match(texte)
+				
+			trouve = trouve_liens_vues.match(texte)
+			while trouve:
+				texte = trouve.groupdict()["avant"] + "/" + trouve.groupdict()["nom_page"] + "/" + trouve.groupdict()["apres"]
+				
+				trouve = trouve_liens_vues.match(texte)
+		
+		return texte
+
+# Attributs
+	titre = models.CharField(max_length=100)
+	slug = models.SlugField(max_length=100)
+	numero = models.IntegerField()
+	images = models.NullBooleanField()
+	liens_vues = models.NullBooleanField()
+	partie = models.ForeignKey('Partie')
+	_contenu = models.TextField(null=True, blank=True)
+	
+# Propriétés
+	contenu = property(_get_contenu)
+
+# enregistrment des adresses ip qui ont visité le site
+class AdresseIpClient(models.Model):
+	def __str__(self):
+		return self.adresse
+
+	adresse = models.IPAdressField()
