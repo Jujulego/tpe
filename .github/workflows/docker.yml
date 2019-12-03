@@ -1,19 +1,16 @@
-name: Publish Docker Image
+name: Build & Publish Docker Image
 
 on: [push]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v1
+    - name: Login to Github registry
+      run: docker login docker.pkg.github.com -u jujulego -p ${{ secrets.GITHUB_TOKEN }}
+    - name: Build Docker image
+      run: docker build -t docker.pkg.github.com/jujulego/tpe/tpe-web:latest .
     - name: Publish Docker image
-      uses: elgohr/Publish-Docker-Github-Action@2.9
-      with:
-        name: jujulego/tpe/tpe-web:latest
-        username: jujulego
-        password: ${{ secrets.GITHUB_TOKEN }}
-        registry: docker.pkg.github.com
+      run: docker push docker.pkg.github.com/jujulego/tpe/tpe-web:latest
