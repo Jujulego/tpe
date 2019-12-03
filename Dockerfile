@@ -14,3 +14,6 @@ RUN pip install -r requirements.txt
 
 # Copy code
 COPY . /code
+
+EXPOSE 80
+ENTRYPOINT python manage.py runserver 0.0.0.0:80
