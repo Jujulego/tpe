@@ -16,4 +16,4 @@ RUN pip install -r requirements.txt
 COPY . /code
 
 EXPOSE 80
-ENTRYPOINT python manage.py runserver 0.0.0.0:80
+ENTRYPOINT python -u manage.py runserver 0.0.0.0:80
