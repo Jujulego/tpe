@@ -12,12 +12,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Set Env
+      run: |
+        echo ::set-env name=IMAGE_NAME::docker.pkg.github.com/jujulego/tpe/tpe-web
+        echo ::set-env name=IMAGE_TAG::$(echo ${GITHUB_REF:10})
     - name: Login to Github registry
       run: docker login docker.pkg.github.com -u jujulego -p ${{ secrets.GITHUB_TOKEN }}
     - name: Build Docker image
       run: docker build -t tpe-web .
     - name: Publish Docker image
       run: |
-        docker tag tpe-web docker.pkg.github.com/jujulego/tpe/tpe-web:latest
-        docker tag tpe-web docker.pkg.github.com/jujulego/tpe/tpe-web:$(echo ${GITHUB_REF:10})
-        docker push docker.pkg.github.com/jujulego/tpe/tpe-web:$(echo ${GITHUB_REF:10})
+        docker tag tpe-web $IMAGE_NAME:latest
+        docker tag tpe-web $IMAGE_NAME:$IMAGE_TAG
+        docker push $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest
