@@ -20,4 +20,4 @@ jobs:
       run: |
         docker tag tpe-web docker.pkg.github.com/jujulego/tpe/tpe-web:latest
         docker tag tpe-web docker.pkg.github.com/jujulego/tpe/tpe-web:$(echo ${GITHUB_REF:10})
-        docker push docker.pkg.github.com/jujulego/tpe/tpe-web:latest
+        docker push docker.pkg.github.com/jujulego/tpe/tpe-web:$(echo ${GITHUB_REF:10})
